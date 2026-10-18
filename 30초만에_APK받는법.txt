@@ -1,0 +1,11 @@
+
+# 30초 만에 APK 받는 가장 빠른 방법 (PWABuilder)
+
+1. https://www.pwabuilder.com 접속
+2. 이 PWA 파일(coco-radio-pwa.html)을 어딘가에 호스팅하거나, 
+   https://www.pwabuilder.com 에서 "Package For Stores" -> Android -> 
+   manifest.json 생성 후 APK 다운로드
+3. 또는 GitHub에 이 폴더를 그대로 푸시하면 Actions에서 자동으로 app-debug.apk가 빌드됨
+   - GitHub repo 생성 -> 이 폴더 전체 업로드 -> Actions 탭 -> Build -> Artifacts에서 APK 다운로드
+
+네비에서는 PWABuilder로 받은 APK가 제일 편합니다. BOOT_COMPLETED 권한까지 포함됨.
