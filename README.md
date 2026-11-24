@@ -44,3 +44,9 @@ index.html을 그냥 브라우저로 열고 "홈 화면에 추가" 하면 됩니
 - 설치 패키지명(applicationId)은 `com.jaehui.cocoradio2` 입니다. 예전 v1(`com.jaehui.cocoradio`)과 서명이 달라도 같이 설치됩니다.
 - 코드 패키지/namespace는 `com.jaehui.cocoradio` 그대로입니다.
 - 홈 화면 이름은 "재희미용실 라디오 2" 입니다. 설치용 파일은 coco-radio-v3.apk 입니다.
+
+## v4 참고
+- 재생은 WebView가 아니라 ExoPlayer(서비스)가 담당합니다. 구형 네비 WebView/CORS/HLS.js 문제를 피하기 위함입니다.
+- KBS·MBC·SBS 주소는 앱이 방송사 API에서 직접 받아 옵니다 (Origin 헤더 없음, 방송사별 User-Agent/Referer).
+- 시동/ACC(BOOT_COMPLETED, QUICKBOOT_POWERON, ACC_ON) 때 마지막 방송을 서비스가 바로 재생합니다. 안드로이드 10 이상에서는 화면이 안 뜰 수 있어도 소리는 나야 합니다.
+- 패키지명은 `com.jaehui.cocoradio2`, 설치 파일은 coco-radio-v4.apk 입니다.

@@ -9,8 +9,8 @@ android {
         applicationId "com.jaehui.cocoradio2"
         minSdk 21
         targetSdk 34
-        versionCode 3
-        versionName "1.2-coco"
+        versionCode 4
+        versionName "1.3-coco"
     }
     signingConfigs {
         shared {
@@ -38,4 +38,6 @@ android {
 }
 
 dependencies {
+    implementation "androidx.media3:media3-exoplayer:1.4.1"
+    implementation "androidx.media3:media3-exoplayer-hls:1.4.1"
 }

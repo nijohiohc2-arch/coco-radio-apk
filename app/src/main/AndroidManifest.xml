@@ -17,6 +17,7 @@
         android:label="재희미용실 라디오 2"
         android:theme="@android:style/Theme.NoTitleBar"
         android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:hardwareAccelerated="true">
 
         <activity
@@ -44,6 +45,11 @@
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.ACC_ON" />
+                <action android:name="android.intent.action.ACTION_ACC_ON" />
+                <action android:name="com.android.action.ACC_ON" />
             </intent-filter>
         </receiver>
 

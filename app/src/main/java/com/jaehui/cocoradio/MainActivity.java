@@ -6,9 +6,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.ViewGroup;
-import android.view.ViewParent;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 public class MainActivity extends Activity {
     private WebView webView;
@@ -31,30 +32,36 @@ public class MainActivity extends Activity {
             startService(svc);
         }
 
-        webView = RadioService.getOrCreateWebView(this);
-        ViewParent parent = webView.getParent();
-        if (parent instanceof ViewGroup) {
-            ((ViewGroup) parent).removeView(webView);
+        webView = new WebView(this);
+        WebSettings ws = webView.getSettings();
+        ws.setJavaScriptEnabled(true);
+        ws.setDomStorageEnabled(true);
+        ws.setAllowFileAccess(true);
+        ws.setAllowContentAccess(true);
+        ws.setAllowFileAccessFromFileURLs(true);
+        ws.setAllowUniversalAccessFromFileURLs(true);
+        ws.setMediaPlaybackRequiresUserGesture(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ws.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
+        ws.setUserAgentString(ws.getUserAgentString() + " CocoRadio/1.3 Mobile");
+        ws.setCacheMode(WebSettings.LOAD_DEFAULT);
+        if (Build.VERSION.SDK_INT >= 17) {
+            ws.setMediaPlaybackRequiresUserGesture(false);
+        }
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return false;
+            }
+        });
+        webView.addJavascriptInterface(new CocoBridge(this), "CocoNative");
+        RadioService.setUiWebView(webView);
 
         getWindow().getDecorView().setKeepScreenOn(true);
+        webView.loadUrl("file:///android_asset/index.html");
         setContentView(webView);
-    }
-
-    @Override
-    protected void onPause() {
-        // Do not call webView.onPause() or pauseTimers() so radio can keep
-        // playing when a map app comes to the foreground.
-        if (webView != null) {
-            webView.resumeTimers();
-            webView.evaluateJavascript(
-                    "(function(){var a=document.querySelector('audio');"
-                            + "if(a && !a.paused){var p=a.play();"
-                            + "if(p&&p.catch)p.catch(function(){});}"
-                            + "})();",
-                    null);
-        }
-        super.onPause();
     }
 
     @Override
@@ -63,7 +70,15 @@ public class MainActivity extends Activity {
         if (webView != null) {
             webView.onResume();
             webView.resumeTimers();
+            RadioService.setUiWebView(webView);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        // Audio is in ExoPlayer (service). Pausing the WebView UI is safe.
+        if (webView != null) webView.onPause();
+        super.onPause();
     }
 
     @Override
@@ -74,14 +89,12 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        // Detach only. The service keeps the WebView so audio can continue.
+        RadioService.setUiWebView(null);
         if (webView != null) {
-            ViewParent parent = webView.getParent();
-            if (parent instanceof ViewGroup) {
-                ((ViewGroup) parent).removeView(webView);
-            }
+            webView.removeJavascriptInterface("CocoNative");
+            webView.destroy();
+            webView = null;
         }
-        webView = null;
         super.onDestroy();
     }
 }
