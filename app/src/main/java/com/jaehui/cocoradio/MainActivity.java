@@ -1,15 +1,14 @@
-
 package com.jaehui.cocoradio;
 
+import android.Manifest;
 import android.app.Activity;
-import android.os.Bundle;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.content.Intent;
-import android.view.View;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.webkit.WebView;
 
 public class MainActivity extends Activity {
     private WebView webView;
@@ -18,34 +17,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        webView = new WebView(this);
-        WebSettings ws = webView.getSettings();
-        ws.setJavaScriptEnabled(true);
-        ws.setDomStorageEnabled(true);
-        ws.setAllowFileAccess(true);
-        ws.setAllowContentAccess(true);
-        ws.setAllowFileAccessFromFileURLs(true);
-        ws.setAllowUniversalAccessFromFileURLs(true);
-        ws.setMediaPlaybackRequiresUserGesture(false);
-        ws.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        ws.setUserAgentString(ws.getUserAgentString() + " CocoRadio/1.0 Mobile");
-        ws.setCacheMode(WebSettings.LOAD_DEFAULT);
-
-        webView.setWebChromeClient(new WebChromeClient());
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return false;
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1001);
             }
-        });
+        }
 
-        // Keep screen on for radio
-        getWindow().getDecorView().setKeepScreenOn(true);
-
-        // Load local PWA
-        webView.loadUrl("file:///android_asset/index.html");
-
-        // Foreground service to keep audio alive when switching to nav map
         Intent svc = new Intent(this, RadioService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(svc);
@@ -53,18 +31,57 @@ public class MainActivity extends Activity {
             startService(svc);
         }
 
+        webView = RadioService.getOrCreateWebView(this);
+        ViewParent parent = webView.getParent();
+        if (parent instanceof ViewGroup) {
+            ((ViewGroup) parent).removeView(webView);
+        }
+
+        getWindow().getDecorView().setKeepScreenOn(true);
         setContentView(webView);
     }
 
     @Override
+    protected void onPause() {
+        // Do not call webView.onPause() or pauseTimers() so radio can keep
+        // playing when a map app comes to the foreground.
+        if (webView != null) {
+            webView.resumeTimers();
+            webView.evaluateJavascript(
+                    "(function(){var a=document.querySelector('audio');"
+                            + "if(a && !a.paused){var p=a.play();"
+                            + "if(p&&p.catch)p.catch(function(){});}"
+                            + "})();",
+                    null);
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) {
+            webView.onResume();
+            webView.resumeTimers();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) webView.goBack();
+        if (webView != null && webView.canGoBack()) webView.goBack();
         else super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
-        if (webView != null) webView.destroy();
+        // Detach only. The service keeps the WebView so audio can continue.
+        if (webView != null) {
+            ViewParent parent = webView.getParent();
+            if (parent instanceof ViewGroup) {
+                ((ViewGroup) parent).removeView(webView);
+            }
+        }
+        webView = null;
         super.onDestroy();
     }
 }

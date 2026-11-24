@@ -13,14 +13,15 @@
 
 1. Android Studio > Open > 이 폴더(coco-radio-apk) 열기
 2. File > Sync Project
-3. Build > Build APK(s) > app-debug.apk 생성
-   위치: app/build/outputs/apk/debug/app-debug.apk
+3. Build > Build Bundle(s) / APK(s) > Build APK(s)
+   설치용: app/build/outputs/apk/release/app-release.apk (coco-radio-v2)
 4. APK를 USB로 네비에 복사
 
 ## 네비 설치
 
 1. 네비 설정 > 보안 > 출처 불명 앱 허용 ON
-2. 파일 관리자에서 app-debug.apk 설치
+2. 파일 관리자에서 coco-radio-v2.apk (또는 app-release.apk) 설치
+   예전에 깐 버전이 있으면 먼저 지운 뒤 설치하세요 (서명 키가 바뀌었습니다).
 3. 네비 설정 > 부팅 시 자동실행 / Autostart 앱에 "재희미용실 라디오" 추가
 4. 네비 WiFi 또는 테더링으로 인터넷 연결 (방송은 인터넷 필요)
 
@@ -33,3 +34,8 @@ index.html을 그냥 브라우저로 열고 "홈 화면에 추가" 하면 됩니
 - 소리 끊김: 네비 절전 모드 해제, 백그라운드 제한 없음으로 설정.
 
 문의: 재희미용실 원장님 라디오
+
+## v2 참고
+- 안드로이드 14: FOREGROUND_SERVICE_MEDIA_PLAYBACK / mediaPlayback 타입, 알림 권한(13+) 요청.
+- 부팅 자동실행: 코드는 들어 있지만 안드로이드 10 이상에서는 시스템이 막아 안 될 수 있습니다. 네비 설정의 자동실행 목록에 앱을 넣어 주세요.
+- 디버그/릴리스 APK는 같은 키로 서명되어 서로 덮어씌워 설치됩니다.

@@ -1,4 +1,3 @@
-
 plugins {
     id 'com.android.application'
 }
@@ -10,15 +9,26 @@ android {
         applicationId "com.jaehui.cocoradio"
         minSdk 21
         targetSdk 34
-        versionCode 1
-        versionName "1.0-coco"
+        versionCode 2
+        versionName "1.1-coco"
+    }
+    signingConfigs {
+        shared {
+            storeFile file("${rootDir}/keystore/coco-radio.p12")
+            storePassword "cocoradio"
+            keyAlias "coco"
+            keyPassword "cocoradio"
+            storeType "PKCS12"
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.shared
         }
         debug {
             debuggable true
+            signingConfig signingConfigs.shared
         }
     }
     compileOptions {
