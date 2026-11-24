@@ -78,7 +78,7 @@ public class RadioService extends Service {
         } else {
             builder = new Notification.Builder(this);
         }
-        builder.setContentTitle("재희미용실 라디오")
+        builder.setContentTitle("재희미용실 라디오 2")
                 .setContentText("코코가 방송을 이어가고 있어요")
                 .setSmallIcon(android.R.drawable.stat_sys_headset)
                 .setContentIntent(pi)

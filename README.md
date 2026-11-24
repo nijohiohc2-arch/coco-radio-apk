@@ -39,3 +39,8 @@ index.html을 그냥 브라우저로 열고 "홈 화면에 추가" 하면 됩니
 - 안드로이드 14: FOREGROUND_SERVICE_MEDIA_PLAYBACK / mediaPlayback 타입, 알림 권한(13+) 요청.
 - 부팅 자동실행: 코드는 들어 있지만 안드로이드 10 이상에서는 시스템이 막아 안 될 수 있습니다. 네비 설정의 자동실행 목록에 앱을 넣어 주세요.
 - 디버그/릴리스 APK는 같은 키로 서명되어 서로 덮어씌워 설치됩니다.
+
+## v3 참고
+- 설치 패키지명(applicationId)은 `com.jaehui.cocoradio2` 입니다. 예전 v1(`com.jaehui.cocoradio`)과 서명이 달라도 같이 설치됩니다.
+- 코드 패키지/namespace는 `com.jaehui.cocoradio` 그대로입니다.
+- 홈 화면 이름은 "재희미용실 라디오 2" 입니다. 설치용 파일은 coco-radio-v3.apk 입니다.
