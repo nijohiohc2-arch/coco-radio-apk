@@ -50,3 +50,8 @@ index.html을 그냥 브라우저로 열고 "홈 화면에 추가" 하면 됩니
 - KBS·MBC·SBS 주소는 앱이 방송사 API에서 직접 받아 옵니다 (Origin 헤더 없음, 방송사별 User-Agent/Referer).
 - 시동/ACC(BOOT_COMPLETED, QUICKBOOT_POWERON, ACC_ON) 때 마지막 방송을 서비스가 바로 재생합니다. 안드로이드 10 이상에서는 화면이 안 뜰 수 있어도 소리는 나야 합니다.
 - 패키지명은 `com.jaehui.cocoradio2`, 설치 파일은 coco-radio-v4.apk 입니다.
+
+## v5 참고
+- 메인 화면 위에 색 테마 선택 칸(동그라미 8개)이 있습니다. 피치 크림, 민트, 라벤더, 스카이블루, 로즈, 샴페인골드, 세이지, 나이트(야간).
+- 선택은 기기에 저장되어 다음에 앱을 켜도 유지됩니다. 재생 방식(ExoPlayer)은 v4와 같습니다.
+- 설치 파일은 coco-radio-v5.apk, 패키지명은 `com.jaehui.cocoradio2` 입니다.

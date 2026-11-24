@@ -13,7 +13,7 @@ jobs:
       - name: Stage APKs
         run: |
           mkdir -p staged
-          cp app/build/outputs/apk/release/app-release.apk staged/coco-radio-v4.apk
+          cp app/build/outputs/apk/release/app-release.apk staged/coco-radio-v5.apk
           cp app/build/outputs/apk/debug/app-debug.apk staged/app-debug.apk
       - uses: actions/upload-artifact@v4
         with:
